@@ -1,0 +1,136 @@
+I want to implement a License Blocker in this app.
+
+Goal
+
+Users must not be able to proceed or use any part of the app until they enter and activate a valid license key.
+
+License Activation API
+
+When the user submits a license key, call the following endpoint:
+
+GET https://testfinder.io/wp-json/lmfwc/v2/licenses/activate/%7BLICENSE_KEY%7D
+
+
+Authorization Header (Basic Auth):
+
+Authorization: Basic Y2tfMzJlZGE3YzljM2E4NjUyYmVkMzVjOTRiMzM2MGY1ODczZjkyOWNkYzpjc184MDIzZDJlMzc1YzYxOTUxMGMwM2I1ODFiMjdmMjRhZjkyOTFlM2Zi
+
+Expected API Responses
+License Expired
+
+If the license key is expired, the API responds with:
+
+{
+  "success": true,
+  "data": {
+    "errors": {
+      "lmfwc_rest_license_expired": [
+        "The license Key expired on 2026-01-18 00:00:00 (UTC)."
+      ]
+    },
+    "error_data": {
+      "lmfwc_rest_license_expired": {
+        "status": 404
+      }
+    }
+  }
+}
+
+
+Behavior:
+
+Show an error message stating the license is expired
+
+Do NOT allow access to the app
+
+License Invalid
+
+If the license key is invalid or not found:
+
+{
+  "success": true,
+  "data": {
+    "errors": {
+      "lmfwc_rest_data_error": [
+        "License Key: CFDA-54CD-C64F-52AS could not be found."
+      ]
+    },
+    "error_data": {
+      "lmfwc_rest_data_error": {
+        "status": 404
+      }
+    }
+  }
+}
+
+
+Behavior:
+
+Show an error message stating the license is invalid
+
+Do NOT allow access to the app
+
+License Active
+
+If the license key is valid and active:
+
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "orderId": 6540,
+    "productId": 6535,
+    "userId": 0,
+    "licenseKey": "1C26-66B1-CBDB-AE3F",
+    "expiresAt": "2026-02-13 22:49:57",
+    "validFor": 30,
+    "source": 1,
+    "status": 2,
+    "timesActivated": 5,
+    "timesActivatedMax": 1000,
+    "createdAt": "2026-01-14 22:49:57",
+    "createdBy": 1,
+    "updatedAt": "2026-01-19 21:49:30",
+    "updatedBy": 1,
+    "activationData": {
+      "id": 5,
+      "token": "89e28ebff11b5c1541cfbc23a954124259104b7e",
+      "license_id": 1,
+      "source": 2,
+      "ip_address": "86.29.249.101",
+      "user_agent": "PostmanRuntime/7.51.0"
+    }
+  }
+}
+
+
+Behavior:
+
+Mark the license as activated
+
+Unlock full app functionality
+
+Display the active license key at the top of the app UI
+
+UI / UX Requirements (IMPORTANT)
+
+Prompt the user for a license key immediately on first launch or import
+
+The entire app must be blocked until a valid license is activated
+
+Show the license input screen before any other UI
+
+Once activated:
+
+Display the license key at the top of the app
+
+Enable all other features
+
+License Key Format
+
+The license key must match this format:
+
+CFDA-54CD-C64F-52AD
+
+
+(4 groups of 4 alphanumeric characters separated by hyphens)
